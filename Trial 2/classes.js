@@ -1,1 +1,1 @@
-export let randoNumber = 574389;
+let randoNumber = 574389;

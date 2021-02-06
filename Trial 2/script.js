@@ -1,4 +1,3 @@
-import randoNumber from './classes'
 
 console.log(randoNumber)
 
