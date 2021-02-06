@@ -1,6 +1,6 @@
-// import randoNumber from './classes'
+import randoNumber from './classes'
 
-// console.log(randoNumber)
+console.log(randoNumber)
 
 let canvas;
 let ctx;
