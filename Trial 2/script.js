@@ -1,5 +1,6 @@
+// import * as classes from './classes'
 
-console.log(randoNumber)
+// console.log(classes.randoNumber)
 
 let canvas;
 let ctx;
@@ -49,20 +50,8 @@ class Thing {
     }
 }
 
-// class Archer {
-//     constructor() {
-//         this.image = document.getElementById("imgplayer")
-//     }
-
-//     drawSquare(ctx) {
-//         ctx.drawImage(this.image, 10, 10, 16, 16)
-//     }
-// }
-
 /* Inits
 -----------------------------------------------------------------*/
-
-// let archerPlayer = new Archer;
 
 let platformXDecrease = 2;
 
@@ -93,6 +82,7 @@ player.newPos = function() {
 
 let needsTobeDrawn = [player] //platform1, platform2
 // let platforms = [platform1,platform2]
+let drawn = []
 
 let GAME_HEIGHT = 400;
 let GAME_WIDTH = 1000;
@@ -106,8 +96,23 @@ window.addEventListener("keyup",function(e) {
     keys[e.keyCode] = false
 })
 
+
+/* Collision Detection
+------------------------------------------*/
+
+let lobbyPieces = [
+    [{name:"botttomgreen", x:0, y:350, color:"green", width:GAME_WIDTH, height:GAME_HEIGHT}] //Foundation
+]
+lobbyPieces.forEach(section => {
+    section.forEach(piece => {
+        drawn.push(piece)
+    })
+})
+
 /* Game loop
 ------------------------------------------*/
+
+let previousY = player.y;
 
 function init() {
     player.x = 200
@@ -146,11 +151,27 @@ function update() {
         player.y = 0
     }
 
+    drawn.forEach(e => {
+        if(isColliding(player, e)) {
+            if(player.y < e.height - player.height) {
+                //console.log(`Players Y: ${player.y} \n Players Height: ${player.height} \n e.height: ${e.height} \n Equation: ${player.y} + ${player.height} < ${e.height} \n Sum Total: ${(player.y - e.height)}`)
+                player.gravity = 0
+                player.gravitySpeed = 0
+                player.y = previousY
 
+            } else {
+                //console.log(`Players Y: ${player.y} \n Players Height: ${player.height} \n e.height: ${e.height} \n Equation: ${player.y}  < ${e.height} \n Sum Total: ${(player.y - e.height)}`)
+            }
+        } else {
+            player.gravity = 0.05
+        }
+    })
 }
 function render(ctx) {
     try {
         ctx.clearRect(0,0,GAME_WIDTH,GAME_HEIGHT)
+        lobbySetup();
+        previousY = player.y
         player.newPos();
         needsTobeDrawn.forEach(thing => {
             if(thing.circle == true) {
@@ -172,6 +193,7 @@ function render(ctx) {
     }
     finally {
         ctx.clearRect(0,0,GAME_WIDTH,GAME_HEIGHT)
+        lobbySetup();
         player.newPos();
         needsTobeDrawn.forEach(thing => {
             if(thing.circle == true) {
@@ -192,11 +214,33 @@ function render(ctx) {
 
 //TIME 25:25/1:16:14 for video
 
+/* Lobby
+-----------------------------------------*/
+
+function draw(ctx, obj) {
+    ctx.fillStyle = obj.color
+    ctx.fillRect(obj.x, obj.y, obj.width, obj.height)
+}
+
+function lobbySetup() {
+    lobbyPieces.forEach(e => {
+        e.forEach(piece => {
+            draw(ctx, piece)
+        })
+    })
+}
+
 /* Other
 -----------------------------------*/
 
+// player.x + player.size > coin.x && player.y + player.size > coin.y && coin.x + coin.size > player.x && coin.y + coin.size > player.y
 function isColliding(obj1, obj2) {
-    return obj1.x + obj1.width > obj2.x && obj1.y + obj1.height > obj2.y && obj2.x + obj2.width > obj1.x && obj2.y + obj2.height > obj1.y
+    //let ret = obj1.x + obj1.width >= obj2.x
+    return obj1.x + obj1.width >= obj2.x && obj1.y + obj1.height >= obj2.y && obj2.x + obj2.width >= obj1.x && obj2.y + obj2.height >= obj1.y
+    // if(ret){
+    //     console.log(`checking ${obj1.name} and ${obj2.name} --> ${ret}`)
+    //     debugger
+    // }
 }
 
 let loopint = window.setInterval(loop,1000/60)

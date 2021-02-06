@@ -45,3 +45,15 @@
     //         player.gravity = 0.10
     //     }
     // })
+
+    
+
+    // class Archer {
+//     constructor() {
+//         this.image = document.getElementById("imgplayer")
+//     }
+
+//     drawSquare(ctx) {
+//         ctx.drawImage(this.image, 10, 10, 16, 16)
+//     }
+// }
