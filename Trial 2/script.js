@@ -203,4 +203,4 @@ function isColliding(obj1, obj2) {
 loopint = window.setInterval(loop,1000/60)
 // let speedIncreaseInt = window.setInterval(increaseSpeed, 3000)
 init();
-//poop
+//poopee
