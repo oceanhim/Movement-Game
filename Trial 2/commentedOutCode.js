@@ -80,3 +80,13 @@
 //         }
 //     })
 // }
+
+        // if(e.name == "landmine") {
+        //     if(player.x > e.x) {
+        //         e.y -= e.height;
+        //         let colors = ["orange", "red", "pink", "blue", "green"]
+        //         let chosenColor = Math.floor((Math.random() * 5) + 0)
+        //         e.color = colors[chosenColor]
+        //         setTimeout(explode(e), 500)
+        //     }
+        // }

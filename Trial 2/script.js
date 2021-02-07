@@ -12,6 +12,8 @@ function setVars() {
     ctx = canvas.getContext("2d")
     imgplayer = document.getElementById("imgplayer")
     trpohyimg = document.getElementById("lobbyTrophy");
+    pieceCreation()
+
 }
 
 window.onload = setVars
@@ -45,17 +47,35 @@ class Thing {
         ctx.fill();
     }
 
-    drawText(ctx, color, fontSize, font, extraVar) {
+    drawText(ctx, color, fontSize, font, name) {
         ctx.fillStyle = color
         ctx.font = `${fontSize} ${font}`
-        ctx.fillText("Score: " + extraVar,0,40)
+        ctx.fillText(`${name}` ,20,60)
     }
 }
 
 /* Inits
 -----------------------------------------------------------------*/
 
+// function explode(obj) {
+//     obj.color = "cornflowerblue"
+//     subtractHealth("poop", 30)
+// }
+
+function subtractHealth(obj, healthAmount) {
+    player.health -= healthAmount
+    if(HealthBG.width >= healthAmount*3) {
+        HealthBG.width -= healthAmount*3
+    }
+    // 3
+    HealthBarText.name = `Health: ${player.health}`
+}
+
 let platformXDecrease = 2;
+
+//ctx.fillStyle = "black"
+        // ctx.font = `50px Verdana`
+        // ctx.fillText(`Health: ${player.health}` ,20,60)
 
 // let platform1 = new Thing("platform1",400,300,400,25,50, false, true, false, "black")
 // let platform2 = new Thing("platform2",800,200,400,25,50, false, true, false, "black")
@@ -66,6 +86,7 @@ player.gravitySpeed = 0;
 player.SpeedY = 0;
 player.SpeedX = 0;
 player.jumpCount = 0;
+player.health = 100;
 player.hitBottom = function() {
     let rockBottom = GAME_HEIGHT - player.height;
     if(player.y > rockBottom) {
@@ -81,8 +102,11 @@ player.newPos = function() {
     player.SpeedY + player.gravitySpeed;
     player.hitBottom()
 }
-
-let needsTobeDrawn = [player] //platform1, platform2
+// ctx.fillStyle = "lightgreen"
+// ctx.fillRect(20,20,300,50)
+let HealthBG = new Thing(`healthBG`, 20,20,300,50,300,false,true,false,"lightgreen")
+let HealthBarText = new Thing(`Health: ${player.health}`,20,60,50,50,100,false,false,true,"black")
+let needsTobeDrawn = [player,HealthBG,HealthBarText] //platform1, platform2
 // let platforms = [platform1,platform2]
 let drawn = []
 
@@ -92,7 +116,7 @@ let GAME_WIDTH = 1000;
 let keys = []
 window.addEventListener("keydown",function(e) {
     keys[e.keyCode] = true
-    // console.log(e.keyCode)
+    //console.log(e.keyCode)
 })
 window.addEventListener("keyup",function(e) {
     keys[e.keyCode] = false
@@ -102,27 +126,46 @@ window.addEventListener("keyup",function(e) {
 /* Collision Detection
 ------------------------------------------*/
 
-let lobbyPieces = [
-    [{name:"botttomgreen", x:0, y:350, color:"green", width:GAME_WIDTH, height:GAME_HEIGHT},{name:"Pillar1", x:50, y:100, color:"black", width:35, height:250}, {name:"Pillar1a", x:85, y:300, color:"gold", width:35, height:50}, {name:"torchHolder", x:95, y:265, color:"brown", width:10, height:30}, {name:"light", x:95, y:250, color:"red", width:10, height:10}, {name:"purpleBulb", x:50, y:50, color:"purple", width:35, height:40}, {name:"lobbystaircasepiece1", x:80, y:140, color:"black", width:35, height:15}] // Ground & left side of lobby
+let AllPieces = [
+    [{name:"botttomgreen", x:0, y:350, color:"green", width:GAME_WIDTH, height:GAME_HEIGHT, isMonster:false},{name:"Pillar1", x:50, y:100, color:"black", width:35, height:250, isMonster:false}, {name:"Pillar1a", x:85, y:300, color:"gold", width:35, height:50, isMonster:false}, {name:"torchHolder", x:95, y:265, color:"brown", width:10, height:30, isMonster:false}, {name:"light", x:95, y:250, color:"red", width:10, height:10, isMonster:false}, {name:"purpleBulb", x:50, y:50, color:"purple", width:35, height:40, isMonster:false}, {name:"lobbystaircasepiece1", x:80, y:140, color:"black", width:35, height:15, isMonster:false}], // Ground & left side of lobby
+    [{name:"obstacle", x:-200, y:330, color:"black", width:50, height:20, isMonster:false}, {name:"obstacle", x:-250, y:310, color:"black", width:50, height:20, isMonster:false}, {name:"obstacle", x:-300, y:290, color:"black", width:50, height:20, isMonster:false}, {name:"obstacle", x:-350, y:270, color:"black", width:50, height:20, isMonster:false}, {name:"obstacle", x:-350, y:270, color:"black", width:50, height:20, isMonster:false}, {name:"obstacle", x:-400, y:250, color:"black", width:50, height:20, isMonster:false}, {name:"obstacle", x:-500, y:330, color:"black", width:100, height:20, isMonster:false}], // Obstacles
+    [{name:"monster1", x:1000, y:320, color:"yellow", width:30, height:30, isMonster:true}], // Monsters
 ]
 // let xvalue = 80;
 // let yvalue = 140;
 // for(i=0; i<4; i++) {
 //     xvalue += 35;
 //     yvalue -= 15; 
-//     lobbyPieces.section1.push({name:"lobbystaircasepiece", x:xvalue, y:yvalue, color:"black", width:35, height:15})
+//     AllPieces.section1.push({name:"lobbystaircasepiece", x:xvalue, y:yvalue, color:"black", width:35, height:15})
 // }
 
-lobbyPieces.forEach(section => {
-    section.forEach(piece => {
-        drawn.push(piece)
+function shootLaser(ctx, obj) {
+    try {
+        ctx.fillStyle = "red"
+        ctx.fillRect((obj.x - 10), obj.y, (obj.width/3), (obj.height/3))
+    }
+    catch(err) {
+        console.log(`Errror: `+ err)
+    }
+}
+    
+function pieceCreation() {
+    AllPieces.forEach(section => {
+        section.forEach(piece => {
+            drawn.push(piece)
+        })
     })
-})
+}
+
+
+
+console.log(drawn)
 
 /* Game loop
 ------------------------------------------*/
 
 let previousY = player.y;
+let previousX = player.x;
 
 function init() {
     player.x = 200
@@ -148,6 +191,17 @@ function update() {
     if(keys[40] == true || keys[83] == true) {
         player.y = player.y + player.speed
     }
+    if(keys[73] == true) {
+        player.speed += 1
+    }
+    if(keys[80] == true) {
+        subtractHealth("pooop", 5)
+    }
+    if(keys[71] == true) {
+
+    }
+
+
     if(player.x < 0) {
         player.x = 0
         drawn.forEach(e => {
@@ -173,19 +227,51 @@ function update() {
 
     drawn.forEach(e => {
         if(isColliding(player, e)) {
+            console.log(`IS Colliding`)
             if(player.y < e.height - player.height) {
                 //console.log(`Players Y: ${player.y} \n Players Height: ${player.height} \n e.height: ${e.height} \n Equation: ${player.y} + ${player.height} < ${e.height} \n Sum Total: ${(player.y - e.height)}`)
                 player.gravity = 0
                 player.gravitySpeed = 0
                 player.y = previousY
-                console.log(`Colliding Top`)
-            } else {
-                //console.log(`Players Y: ${player.y} \n Players Height: ${player.height} \n e.height: ${e.height} \n Equation: ${player.y}  < ${e.height} \n Sum Total: ${(player.y - e.height)}`)
+            } 
+            // if(player.x < e.x + e.width) {
+            //     player.x = previousX
+            // }
+            // if(player.x + player.width > e.x) {
+            //     player.x = player.x
+            // }
+            if(e.name == "obstacle") {
+                player.gravity = 0
+                player.gravitySpeed = 0
+                player.y = previousY
             }
         } else {
             player.gravity = 0.05
-            console.log(`Colliding General`)
         }
+        if(e.isMonster) {
+            if(player.x > e.x - 200 && player.x < e.x + 200) {
+                console.log(`Within Range`)
+                // let laser = {
+                //     x:e.x-50,
+                //     y:e.y-20,
+                //     width:e.width/2,
+                //     height:e.height/2
+                // }
+                
+                // ctx.fillStyle = "pink"
+                // ctx.fillRect(laser.x, laser.y, laser.width, laser.height)
+                let colors = ["orange", "red", "pink", "blue", "green"]
+                let chosenColor = Math.floor((Math.random() * 5) + 0)
+                e.color = colors[chosenColor]
+
+                //laser.x -= 0.05;
+                // ctx.fillRect(laser.x, laser.y, laser.width, laser.height)
+            }
+            if(isColliding(player, e)) {
+                subtractHealth("pooooooooooop",5)
+            }
+        }
+
     })
 }
 function render(ctx) {
@@ -193,20 +279,35 @@ function render(ctx) {
         ctx.clearRect(0,0,GAME_WIDTH,GAME_HEIGHT)
         lobbySetup();
         ctx.drawImage(trpohyimg, GAME_WIDTH/2, 50, 100, 100)
+        
+        ctx.fillStyle = "black"
+        ctx.fillRect(20,20,303,55)
+
+        ctx.fillStyle = "red"
+        ctx.fillRect(20,20,300,50)
+
+        // ctx.fillStyle = "lightgreen"
+        // ctx.fillRect(20,20,300,50)
+
+        // ctx.fillStyle = "black"
+        // ctx.font = `50px Verdana`
+        // ctx.fillText(`Health: ${player.health}` ,20,60)
+        
         previousY = player.y
+        previousX = player.x
         player.newPos();
         needsTobeDrawn.forEach(thing => {
             if(thing.circle == true) {
-                // console.log(thing.name + ` is a circle`)
+                //console.log(thing.name + ` is a circle`)
                 thing.drawCircle(ctx)
             }
             if(thing.square == true) {
-                // console.log(thing.name + ` is a square`)
+                //console.log(thing.name + ` is a square`)
                 thing.drawSquare(ctx)
             }
             if(thing.text == true) {
-                // console.log(thing.name + ` is text`)
-                thing.drawText(ctx, thing.color)
+                //console.log(thing.name + ` is text`)
+                thing.drawText(ctx, thing.color, "50px", "Verdana", thing.name)
             }
         })
     }
@@ -226,7 +327,7 @@ function draw(ctx, obj) {
 }
 
 function lobbySetup() {
-    lobbyPieces.forEach(e => {
+    AllPieces.forEach(e => {
         e.forEach(piece => {
             draw(ctx, piece)
         })
