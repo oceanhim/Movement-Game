@@ -1,6 +1,4 @@
-// import * as classes from './classes'
-
-// console.log(classes.randoNumber)
+// Nest Version: Version 0.0.3
 
 let canvas;
 let ctx;
