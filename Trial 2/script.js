@@ -150,9 +150,19 @@ function update() {
     }
     if(player.x < 0) {
         player.x = 0
+        drawn.forEach(e => {
+            e.x += player.speed
+            let grass = drawn[0];
+            grass.x = player.x
+        })
     }
     if(player.x > (GAME_WIDTH - 25)) {
         player.x = (GAME_WIDTH - 25)
+        drawn.forEach(e => {
+            e.x -= player.speed
+            let grass = drawn[0];
+            grass.width += player.speed
+        })
     }
     if(player.y > (GAME_HEIGHT - 25)) {
         player.y = (GAME_HEIGHT - 25)
