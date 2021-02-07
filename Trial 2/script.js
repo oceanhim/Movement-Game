@@ -5,11 +5,13 @@
 let canvas;
 let ctx;
 let imgplayer; 
+let trpohyimg;
 
 function setVars() {
     canvas = document.getElementById("gameCanvas")
     ctx = canvas.getContext("2d")
     imgplayer = document.getElementById("imgplayer")
+    trpohyimg = document.getElementById("lobbyTrophy");
 }
 
 window.onload = setVars
@@ -101,8 +103,16 @@ window.addEventListener("keyup",function(e) {
 ------------------------------------------*/
 
 let lobbyPieces = [
-    [{name:"botttomgreen", x:0, y:350, color:"green", width:GAME_WIDTH, height:GAME_HEIGHT}] //Foundation
+    [{name:"botttomgreen", x:0, y:350, color:"green", width:GAME_WIDTH, height:GAME_HEIGHT},{name:"Pillar1", x:50, y:100, color:"black", width:35, height:250}, {name:"Pillar1a", x:85, y:300, color:"gold", width:35, height:50}, {name:"torchHolder", x:95, y:265, color:"brown", width:10, height:30}, {name:"light", x:95, y:250, color:"red", width:10, height:10}, {name:"purpleBulb", x:50, y:50, color:"purple", width:35, height:40}, {name:"lobbystaircasepiece1", x:80, y:140, color:"black", width:35, height:15}] // Ground & left side of lobby
 ]
+// let xvalue = 80;
+// let yvalue = 140;
+// for(i=0; i<4; i++) {
+//     xvalue += 35;
+//     yvalue -= 15; 
+//     lobbyPieces.section1.push({name:"lobbystaircasepiece", x:xvalue, y:yvalue, color:"black", width:35, height:15})
+// }
+
 lobbyPieces.forEach(section => {
     section.forEach(piece => {
         drawn.push(piece)
@@ -158,12 +168,13 @@ function update() {
                 player.gravity = 0
                 player.gravitySpeed = 0
                 player.y = previousY
-
+                console.log(`Colliding Top`)
             } else {
                 //console.log(`Players Y: ${player.y} \n Players Height: ${player.height} \n e.height: ${e.height} \n Equation: ${player.y}  < ${e.height} \n Sum Total: ${(player.y - e.height)}`)
             }
         } else {
             player.gravity = 0.05
+            console.log(`Colliding General`)
         }
     })
 }
@@ -171,6 +182,7 @@ function render(ctx) {
     try {
         ctx.clearRect(0,0,GAME_WIDTH,GAME_HEIGHT)
         lobbySetup();
+        ctx.drawImage(trpohyimg, GAME_WIDTH/2, 50, 100, 100)
         previousY = player.y
         player.newPos();
         needsTobeDrawn.forEach(thing => {
@@ -190,25 +202,6 @@ function render(ctx) {
     }
     catch(err) {
         console.log(`Error: ` + err)
-    }
-    finally {
-        ctx.clearRect(0,0,GAME_WIDTH,GAME_HEIGHT)
-        lobbySetup();
-        player.newPos();
-        needsTobeDrawn.forEach(thing => {
-            if(thing.circle == true) {
-                // console.log(thing.name + ` is a circle`)
-                thing.drawCircle(ctx)
-            }
-            if(thing.square == true) {
-                // console.log(thing.name + ` is a square`)
-                thing.drawSquare(ctx)
-            }
-            if(thing.text == true) {
-                // console.log(thing.name + ` is text`)
-                thing.drawText(ctx, thing.color)
-            }
-        })
     }
 }   
 

@@ -57,3 +57,26 @@
 //         ctx.drawImage(this.image, 10, 10, 16, 16)
 //     }
 // }
+
+
+// finally {
+//     ctx.clearRect(0,0,GAME_WIDTH,GAME_HEIGHT)
+//     lobbySetup();
+//     ctx.drawImage(trpohyimg, 10, 200)
+//     previousY = player.y
+//     player.newPos();
+//     needsTobeDrawn.forEach(thing => {
+//         if(thing.circle == true) {
+//             // console.log(thing.name + ` is a circle`)
+//             thing.drawCircle(ctx)
+//         }
+//         if(thing.square == true) {
+//             // console.log(thing.name + ` is a square`)
+//             thing.drawSquare(ctx)
+//         }
+//         if(thing.text == true) {
+//             // console.log(thing.name + ` is text`)
+//             thing.drawText(ctx, thing.color)
+//         }
+//     })
+// }
