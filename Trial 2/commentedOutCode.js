@@ -143,3 +143,7 @@
     //         grass.width += player.speed
     //     })
     // }
+
+    
+let ocean13 = 13
+module.exports.ocean13 = ocean13

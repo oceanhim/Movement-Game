@@ -1,4 +1,8 @@
-// Nest Version: Version 0.0.3
+// Nest Version: Version 0.0.4
+
+import helloWorld from './helloworld.js';
+
+console.log(helloWorld());
 
 let canvas;
 let ctx;
@@ -66,6 +70,11 @@ let platformXDecrease = 2;
 
 // let platform1 = new Thing("platform1",400,300,400,25,50, false, true, false, "black")
 // let platform2 = new Thing("platform2",800,200,400,25,50, false, true, false, "black")
+
+let poop = {
+    name:"poop"
+}
+
 let player = new Thing("player",0,0,25,25,50, false, true, false, "red")
 player.speed = 4;
 player.gravity = 0.05;
@@ -73,7 +82,8 @@ player.gravitySpeed = 0;
 player.SpeedY = 0;
 player.SpeedX = 0;
 player.jumpCount = 0;
-player.health = 100;    
+player.health = 100;
+player.inventory = [poop]    
 player.hitBottom = function() {
     let rockBottom = GAME_HEIGHT - player.height;
     if(player.y > rockBottom) {
@@ -203,9 +213,15 @@ function pieceCreation() {
     })
 }
 
-
-
-console.log(drawn)
+function openInventory(ctx) {
+    ctx.fillStyle = "black"
+    ctx.fillRect(player.x, GAME_HEIGHT/2, 200, 200)
+    player.inventory.forEach(item => {
+        ctx.fillStyle = "white"
+        ctx.font = `25px Hanalei`
+        ctx.fillText(`${item.name}` ,player.x,GAME_HEIGHT/2)
+    })
+}
 
 /* Game loop
 ------------------------------------------*/
@@ -233,23 +249,21 @@ function update() {
     }
     if(keys[39] == true || keys[68] == true) {
         player.x = player.x + player.speed
-        let section3 = AllPieces[2]
-        if(player.x >= section3[5].x) {
-            startOVERRUNgame();
-        }
     }
     if(keys[40] == true || keys[83] == true) {
         player.y = player.y + player.speed
     }
-    if(keys[73] == true) {
+    if(keys[190] == true) {
         player.speed += 1
     }
     if(keys[80] == true) {
         subtractHealth("pooop", 5)
+        console.log(AllPieces)
     }
-    if(keys[71] == true) {
+    if(keys[73] == true) {[
+        openInventory(ctx)
+    ]}
 
-    }
 
 
     if(player.x < 0) {
@@ -278,6 +292,11 @@ function update() {
     }
     if(player.y < 0) {
         player.y = 0
+    }
+
+    let section3 = AllPieces[2]
+    if(player.x >= section3[3].x) {
+        startOVERRUNgame();
     }
 
     drawn.forEach(e => {
@@ -368,7 +387,6 @@ function render(ctx) {
 
 function draw(ctx, obj) {
     ctx.fillStyle = obj.color
-    ctx.border = "black"
     ctx.fillRect(obj.x, obj.y, obj.width, obj.height)
 }
 
@@ -383,9 +401,16 @@ function lobbySetup() {
 /* OVERRUN GAME
 -----------------------------------------*/
 
+let monsterCount = 1;
+
 function startOVERRUNgame() {
     let section4 = AllPieces[3];
-    section4.push({name:"monster", x:1500, y:200, color:"yellow", width:20, height:20, isMonster:true})
+    let monster = {name:"monster", x:1300, y:200, color:"yellow", width:20, height:20, isMonster:true}
+    if(monsterCount == 1) {
+        section4.push(monster)
+        monsterCount = 0;
+    }
+
 }
 
 /* Other
