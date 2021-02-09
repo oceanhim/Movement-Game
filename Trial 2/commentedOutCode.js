@@ -90,3 +90,56 @@
         //         setTimeout(explode(e), 500)
         //     }
         // }
+
+
+
+                        // let laser = {
+                //     x:e.x-50,
+                //     y:e.y-20,
+                //     width:e.width/2,
+                //     height:e.height/2
+                // }
+                
+                // ctx.fillStyle = "pink"
+                // ctx.fillRect(laser.x, laser.y, laser.width, laser.height)
+                
+                // let colors = ["orange", "red", "pink", "blue", "green"]
+                // let chosenColor = Math.floor((Math.random() * 5) + 0)
+                // e.color = colors[chosenColor]
+
+                //laser.x -= 0.05;
+                // ctx.fillRect(laser.x, laser.y, laser.width, laser.height)
+
+
+                //for(let i=0; i<10; i++) {
+                    //     ctx.clearRect(0,0,GAME_WIDTH,GAME_HEIGHT)
+                    //     ctx.fillStyle = "black"
+                    //     ctx.font = `50px Hanalei`
+                    //     ctx.fillText(`YOU DIED`, 200, 200)
+                    // }
+
+            // if(player.x < e.x + e.width) {
+            //     player.x = previousX
+            // }
+            // if(player.x + player.width > e.x) {
+            //     player.x = player.x
+            // }
+            // if(e.name == "obstacle" || e.name == "castleBlock") {
+            //     player.gravity = 0
+            //     player.gravitySpeed = 0
+            //     player.y = previousY
+            // }
+
+                
+            
+            
+            // if(player.x > (GAME_WIDTH - 25)) {
+    //     player.x = (GAME_WIDTH - 25)
+    //     let minititle = needsTobeDrawn[2]
+    //     minititle.x -= player.speed
+    //     drawn.forEach(e => {
+    //         e.x -= player.speed
+    //         let grass = drawn[0];
+    //         grass.width += player.speed
+    //     })
+    // }

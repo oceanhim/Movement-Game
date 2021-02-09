@@ -4,12 +4,15 @@ let canvas;
 let ctx;
 let imgplayer; 
 let trpohyimg;
+let miniGameStartBTn;
 
 function setVars() {
     canvas = document.getElementById("gameCanvas")
     ctx = canvas.getContext("2d")
     imgplayer = document.getElementById("imgplayer")
     trpohyimg = document.getElementById("lobbyTrophy");
+    miniGameStartBTn = document.getElementById("gameSTARTbutton")
+    createBottomLayerCastleBlocks()
     pieceCreation()
 
 }
@@ -45,29 +48,15 @@ class Thing {
         ctx.fill();
     }
 
-    drawText(ctx, color, fontSize, font, name) {
-        ctx.fillStyle = color
+    drawText(ctx, obj, fontSize, font) {
+        ctx.fillStyle = obj.color
         ctx.font = `${fontSize} ${font}`
-        ctx.fillText(`${name}` ,20,60)
+        ctx.fillText(`${obj.name}` ,obj.x,obj.y)
     }
 }
 
 /* Inits
 -----------------------------------------------------------------*/
-
-// function explode(obj) {
-//     obj.color = "cornflowerblue"
-//     subtractHealth("poop", 30)
-// }
-
-function subtractHealth(obj, healthAmount) {
-    player.health -= healthAmount
-    if(HealthBG.width >= healthAmount*3) {
-        HealthBG.width -= healthAmount*3
-    }
-    // 3
-    HealthBarText.name = `Health: ${player.health}`
-}
 
 let platformXDecrease = 2;
 
@@ -84,7 +73,7 @@ player.gravitySpeed = 0;
 player.SpeedY = 0;
 player.SpeedX = 0;
 player.jumpCount = 0;
-player.health = 100;
+player.health = 100;    
 player.hitBottom = function() {
     let rockBottom = GAME_HEIGHT - player.height;
     if(player.y > rockBottom) {
@@ -104,8 +93,9 @@ player.newPos = function() {
 // ctx.fillRect(20,20,300,50)
 let HealthBG = new Thing(`healthBG`, 20,20,300,50,300,false,true,false,"lightgreen")
 let HealthBarText = new Thing(`Health: ${player.health}`,20,60,50,50,100,false,false,true,"black")
-let needsTobeDrawn = [player,HealthBG,HealthBarText] //platform1, platform2
-// let platforms = [platform1,platform2]
+let GameTitleText = new Thing(`CASTLE OVERRUN`,1000,60,50,50,100,false,false,true,"black")
+let needsTobeDrawn = [player,HealthBG,GameTitleText,HealthBarText] //platform1, platform2
+
 let drawn = []
 
 let GAME_HEIGHT = 400;
@@ -125,10 +115,68 @@ window.addEventListener("keyup",function(e) {
 ------------------------------------------*/
 
 let AllPieces = [
-    [{name:"botttomgreen", x:0, y:350, color:"green", width:GAME_WIDTH, height:GAME_HEIGHT, isMonster:false},{name:"Pillar1", x:50, y:100, color:"black", width:35, height:250, isMonster:false}, {name:"Pillar1a", x:85, y:300, color:"gold", width:35, height:50, isMonster:false}, {name:"torchHolder", x:95, y:265, color:"brown", width:10, height:30, isMonster:false}, {name:"light", x:95, y:250, color:"red", width:10, height:10, isMonster:false}, {name:"purpleBulb", x:50, y:50, color:"purple", width:35, height:40, isMonster:false}, {name:"lobbystaircasepiece1", x:80, y:140, color:"black", width:35, height:15, isMonster:false}], // Ground & left side of lobby
-    [{name:"obstacle", x:-200, y:330, color:"black", width:50, height:20, isMonster:false}, {name:"obstacle", x:-250, y:310, color:"black", width:50, height:20, isMonster:false}, {name:"obstacle", x:-300, y:290, color:"black", width:50, height:20, isMonster:false}, {name:"obstacle", x:-350, y:270, color:"black", width:50, height:20, isMonster:false}, {name:"obstacle", x:-350, y:270, color:"black", width:50, height:20, isMonster:false}, {name:"obstacle", x:-400, y:250, color:"black", width:50, height:20, isMonster:false}, {name:"obstacle", x:-500, y:330, color:"black", width:100, height:20, isMonster:false}], // Obstacles
-    [{name:"monster1", x:1000, y:320, color:"yellow", width:30, height:30, isMonster:true}], // Monsters
+    [{name:"botttomgreen", x:0, y:350, color:"green", width:GAME_WIDTH, height:GAME_HEIGHT, isMonster:false},{name:"Pillar1", x:50, y:100, color:"black", width:35, height:250, isMonster:false}, {name:"Pillar1a", x:85, y:300, color:"gold", width:35, height:50, isMonster:false}, {name:"torchHolder", x:95, y:265, color:"brown", width:10, height:30, isMonster:false}, {name:"light", x:95, y:250, color:"red", width:10, height:10, isMonster:false}, {name:"purpleBulb", x:50, y:50, color:"purple", width:35, height:40, isMonster:false}, {name:"lobbystaircasepiece1", x:80, y:140, color:"black", width:35, height:15, isMonster:false},{name:"respawn", x:500, y:350, color:"green", width:35, height:15, isMonster:false}], // Ground & left side of lobby
+    [{name:"obstacle", x:-200, y:330, color:"black", width:50, height:20, isMonster:false}, {name:"obstacle", x:-250, y:310, color:"black", width:50, height:20, isMonster:false}, {name:"obstacle", x:-300, y:290, color:"black", width:50, height:20, isMonster:false}, {name:"obstacle", x:-350, y:270, color:"black", width:50, height:20, isMonster:false}, {name:"obstacle", x:-350, y:270, color:"black", width:50, height:20, isMonster:false}, {name:"obstacle", x:-400, y:250, color:"black", width:50, height:20, isMonster:false}, {name:"obstacle", x:-500, y:330, color:"black", width:100, height:20, isMonster:false, id:"trampoline1"}, {name:"obstacle", x:-300, y:290, color:"black", width:50, height:20, isMonster:false}, {name:"obstacle", x:-350, y:270, color:"black", width:50, height:20, isMonster:false}, {name:"obstacle", x:-350, y:270, color:"black", width:50, height:20, isMonster:false}, {name:"obstacle", x:-400, y:250, color:"black", width:50, height:20, isMonster:false}, {name:"obstacle", x:-600, y:100, color:"black", width:70, height:20, isMonster:false}, {name:"obstacle", x:-530, y:100, color:"red", width:30, height:20, isMonster:false, id:"deathBlock"}], // Obstacles
+    [{name:"castleBlock", x:1000, y:300, color:"grey", width:50, height:50, isMonster:false}], // Castle Blocks
+    [] // Monsters
 ]
+
+function createBottomLayerCastleBlocks() {
+    let section3 = AllPieces[2]
+    let xvalue = 1000
+    for(let i=0; i<5; i++) {
+        xvalue += 50
+        section3.push({name:"castleBlock", x:xvalue, y:300, color:"grey", width:50, height:50, isMonster:false})
+    }
+    for(let i=0; i<5; i++) {
+        section3.push({name:"castleBlock", x:xvalue, y:250, color:"grey", width:50, height:50, isMonster:false})   
+        xvalue -= 50
+    }
+    xvalue += 50
+    for(let i=0; i<4; i++) {
+        xvalue += 50
+        section3.push({name:"castleBlock", x:xvalue, y:200, color:"grey", width:50, height:50, isMonster:false})
+    }
+    xvalue += 50
+    for(let i=0; i<3; i++) {
+        xvalue -= 50
+        section3.push({name:"castleBlock", x:xvalue, y:150, color:"grey", width:50, height:50, isMonster:false})
+    }
+}
+
+
+function respawn(x, y) {
+    player.x = x
+    player.y = y
+}
+
+// function explode(obj) {
+//     obj.color = "cornflowerblue"
+//     subtractHealth("poop", 30)
+// }
+
+function subtractHealth(obj, healthAmount) {
+    player.health -= healthAmount
+    let respawnSection1 = AllPieces[0]
+    let respawnBlock1 = respawnSection1[(respawnSection1.length - 1)]
+    if(HealthBG.width >= healthAmount*3) {
+        HealthBG.width -= healthAmount*3
+    }
+    if(player.health <= 0) {
+        respawn(respawnBlock1.x, (respawnBlock1.y - player.height))
+    }
+    // 3
+    HealthBarText.name = `Health: ${player.health}`
+}
+
+function changeColorOOtramp() {
+    let colors = ["orange", "red", "pink", "blue", "green"]
+    let chosenColor = Math.floor((Math.random() * 5) + 0)
+    let piecesarraySection2 = AllPieces[1]
+    let lastOfSection2 = piecesarraySection2[6]
+    lastOfSection2.color = colors[chosenColor]
+}
+
 // let xvalue = 80;
 // let yvalue = 140;
 // for(i=0; i<4; i++) {
@@ -185,6 +233,10 @@ function update() {
     }
     if(keys[39] == true || keys[68] == true) {
         player.x = player.x + player.speed
+        let section3 = AllPieces[2]
+        if(player.x >= section3[5].x) {
+            startOVERRUNgame();
+        }
     }
     if(keys[40] == true || keys[83] == true) {
         player.y = player.y + player.speed
@@ -202,14 +254,19 @@ function update() {
 
     if(player.x < 0) {
         player.x = 0
+        let minititle = needsTobeDrawn[2]
+        minititle.x += player.speed
         drawn.forEach(e => {
             e.x += player.speed
             let grass = drawn[0];
             grass.x = player.x
         })
     }
-    if(player.x > (GAME_WIDTH - 25)) {
-        player.x = (GAME_WIDTH - 25)
+
+    if(player.x > (GAME_WIDTH/2)) {
+        player.x = (GAME_WIDTH/2)
+        let minititle = needsTobeDrawn[2]
+        minititle.x -= player.speed
         drawn.forEach(e => {
             e.x -= player.speed
             let grass = drawn[0];
@@ -225,23 +282,27 @@ function update() {
 
     drawn.forEach(e => {
         if(isColliding(player, e)) {
-            console.log(`IS Colliding`)
             if(player.y < e.height - player.height) {
                 //console.log(`Players Y: ${player.y} \n Players Height: ${player.height} \n e.height: ${e.height} \n Equation: ${player.y} + ${player.height} < ${e.height} \n Sum Total: ${(player.y - e.height)}`)
                 player.gravity = 0
                 player.gravitySpeed = 0
                 player.y = previousY
             } 
-            // if(player.x < e.x + e.width) {
-            //     player.x = previousX
-            // }
-            // if(player.x + player.width > e.x) {
-            //     player.x = player.x
-            // }
-            if(e.name == "obstacle") {
-                player.gravity = 0
-                player.gravitySpeed = 0
-                player.y = previousY
+            let grassSection = AllPieces[0]
+            let grass = grassSection[0]
+
+            if(player.x + player.width >= e.x && e != grass) {
+                player.x = previousX
+            }
+            player.gravity = 0
+            player.gravitySpeed = 0
+            player.y = previousY
+
+            if(e.id == "trampoline1") {
+                player.y -= 250;
+            }
+            if(e.id == "deathBlock") {
+                subtractHealth("poooop", player.health)
             }
         } else {
             player.gravity = 0.05
@@ -249,21 +310,7 @@ function update() {
         if(e.isMonster) {
             if(player.x > e.x - 200 && player.x < e.x + 200) {
                 console.log(`Within Range`)
-                // let laser = {
-                //     x:e.x-50,
-                //     y:e.y-20,
-                //     width:e.width/2,
-                //     height:e.height/2
-                // }
-                
-                // ctx.fillStyle = "pink"
-                // ctx.fillRect(laser.x, laser.y, laser.width, laser.height)
-                let colors = ["orange", "red", "pink", "blue", "green"]
-                let chosenColor = Math.floor((Math.random() * 5) + 0)
-                e.color = colors[chosenColor]
 
-                //laser.x -= 0.05;
-                // ctx.fillRect(laser.x, laser.y, laser.width, laser.height)
             }
             if(isColliding(player, e)) {
                 subtractHealth("pooooooooooop",5)
@@ -305,7 +352,7 @@ function render(ctx) {
             }
             if(thing.text == true) {
                 //console.log(thing.name + ` is text`)
-                thing.drawText(ctx, thing.color, "50px", "Verdana", thing.name)
+                thing.drawText(ctx, thing, "50px", "Hanalei")
             }
         })
     }
@@ -321,6 +368,7 @@ function render(ctx) {
 
 function draw(ctx, obj) {
     ctx.fillStyle = obj.color
+    ctx.border = "black"
     ctx.fillRect(obj.x, obj.y, obj.width, obj.height)
 }
 
@@ -330,6 +378,14 @@ function lobbySetup() {
             draw(ctx, piece)
         })
     })
+}
+
+/* OVERRUN GAME
+-----------------------------------------*/
+
+function startOVERRUNgame() {
+    let section4 = AllPieces[3];
+    section4.push({name:"monster", x:1500, y:200, color:"yellow", width:20, height:20, isMonster:true})
 }
 
 /* Other
@@ -346,5 +402,6 @@ function isColliding(obj1, obj2) {
 }
 
 let loopint = window.setInterval(loop,1000/60)
+let changeColorIn = window.setInterval(changeColorOOtramp, 100)
 // let speedIncreaseInt = window.setInterval(increaseSpeed, 3000)
 init();
