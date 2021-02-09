@@ -144,6 +144,5 @@
     //     })
     // }
 
-    
-let ocean13 = 13
-module.exports.ocean13 = ocean13
+    let ocean13 = 13
+export default ocean13

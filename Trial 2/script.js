@@ -1,8 +1,8 @@
-// Nest Version: Version 0.0.4
+// Nest Version: Version 0.0.5
 
-import helloWorld from './helloworld.js';
+import ocean13 from './commentedOutCode.js';
 
-console.log(helloWorld());
+console.log(ocean13);
 
 let canvas;
 let ctx;
